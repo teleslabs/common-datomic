@@ -6,8 +6,8 @@
 (defn entity->model
   [entity]
   (-> entity
-    first
-    (dissoc :db/id)))
+      first
+      (dissoc :db/id)))
 
 (s/defn insert!
   [entity :- {s/Keyword s/Any}]

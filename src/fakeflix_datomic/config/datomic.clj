@@ -21,6 +21,12 @@
        (map schema/entity-schema)
        (reduce into)))
 
+(s/defn clean-mem-database
+  [uri :- s/Str
+   type :- s/Keyword]
+  (if (= type :mem)
+    (d/delete-database uri)))
+
 (s/defn start-datomic
   ([host :- s/Str
     db-name :- s/Str
@@ -29,6 +35,7 @@
     schemas :- [{s/Any s/Any}]]
    (let [uri (str "datomic:" (name type)  "://" host "/" db-name "?password=" password)
          entity-schemas (create-schemas schemas)]
+     (clean-mem-database uri type)
      (d/create-database uri)
      (create-connection! uri)
      (transact-schemas! @connection entity-schemas)))

@@ -1,7 +1,7 @@
-(ns fakeflix-datomic.config.schema
+(ns common-datomic.config.schema
   (:require [schema.core :as s]))
 
-(def core-values ["String" 1 1.0 #uuid "186579ce-7224-4d7f-8bd0-4280044f6296" true])
+(def core-values ["String" 1 1.0 #uuid "186579ce-7224-4d7f-8bd0-4280044f6296" true #inst "2023-09-07"])
 
 (s/defn schema-type->core-value :- s/Any
   [schema-type :- s/Any]
@@ -19,12 +19,13 @@
   [schema-type :- s/Any]
   (let [core-value (schema-type->core-value schema-type)]
     (cond
-      (string? core-value) :db.type/string
-      (int? core-value) :db.type/long
-      (float? core-value) :db.type/float
-      (uuid? core-value) :db.type/uuid
+      (string? core-value)  :db.type/string
+      (int? core-value)     :db.type/long
+      (float? core-value)   :db.type/float
+      (uuid? core-value)    :db.type/uuid
       (boolean? core-value) :db.type/boolean
-      :else :db.type/string)))
+      (inst? core-value)    :db.type/instant
+      :else                 :db.type/string)))
 
 (s/defn skeleton-attribute->entity-attribute
   [attribute :- [s/Any]]

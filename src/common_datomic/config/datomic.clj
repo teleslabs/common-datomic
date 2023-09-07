@@ -1,6 +1,6 @@
-(ns fakeflix-datomic.config.datomic
+(ns common-datomic.config.datomic
   (:require [datomic.api :as d]
-            [fakeflix-datomic.config.schema :as schema]
+            [common-datomic.config.schema :as schema]
             [schema.core :as s])
   (:import (datomic Connection)))
 

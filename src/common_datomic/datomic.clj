@@ -1,6 +1,6 @@
 (ns common-datomic.datomic
-  (:require [datomic.api :as d]
-            [common-datomic.config.datomic :as config]
+  (:require [common-datomic.config.datomic :as config]
+            [datomic.api :as d]
             [schema.core :as s]))
 
 (defn entity->model

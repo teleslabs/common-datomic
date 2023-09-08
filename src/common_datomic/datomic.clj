@@ -1,6 +1,6 @@
-(ns fakeflix-datomic.datomic
-  (:require [datomic.api :as d]
-            [fakeflix-datomic.config.datomic :as config]
+(ns common-datomic.datomic
+  (:require [common-datomic.config.datomic :as config]
+            [datomic.api :as d]
             [schema.core :as s]))
 
 (defn entity->model

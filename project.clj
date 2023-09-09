@@ -1,4 +1,4 @@
-(defproject org.clojars.teleslabs/common-datomic "1.1.1"
+(defproject org.clojars.teleslabs/common-datomic "1.2.0"
   :description "Common Datomic library"
   :url "https://pedroteles.dev"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -7,7 +7,10 @@
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [prismatic/schema "1.2.1"]
                  [org.clojars.pedroso/fakeflix-schema "1.0.1"]
-                 [com.datomic/datomic-free "0.9.5697"]]
+                 [com.datomic/peer "1.0.6735"]
+                 [com.amazonaws/aws-java-sdk-dynamodb "1.12.358"]]
+  :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
+                                   :creds :gpg}}
   :aliases {"diagnostics"  ["clojure-lsp" "diagnostics"]
             "format"       ["clojure-lsp" "format" "--dry"]
             "format-fix"   ["clojure-lsp" "format"]

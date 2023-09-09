@@ -4,6 +4,8 @@
             [schema.core :as s])
   (:import (datomic Connection)))
 
+(def dummy-aws-access-key-id "dummy")
+(def dummy-aws-access-secret-key "dummy")
 (def connection (atom nil))
 
 (s/defn transact-schemas!
@@ -44,3 +46,24 @@
     type :- s/Keyword
     schemas :- [{s/Any s/Any}]]
    (start-datomic "localhost:4334" db-name password type schemas)))
+
+; TODO: create schema for datomic config
+(s/defn start-datomic-dev
+  [{:keys [host db-name password]}
+   schemas :- [{s/Any s/Any}]]
+  (let [uri (str "datomic:dev://" host "/" db-name "?password=" password)
+        entity-schemas (create-schemas schemas)]
+    (d/create-database uri)
+    (create-connection! uri)
+    (transact-schemas! @connection entity-schemas)))
+
+(s/defn start-datomic-ddb-local
+  [{:keys [host table db-name aws-access-key-id aws-access-secret-key]
+    :or   {aws-access-key-id dummy-aws-access-key-id
+           aws-access-secret-key dummy-aws-access-secret-key}}
+   schemas :- [{s/Any s/Any}]]
+  (let [uri (str "datomic:ddb-local://" host "/" table "/" db-name "?aws_access_key_id=" aws-access-key-id "&aws_secret_key=" aws-access-secret-key)
+        entity-schemas (create-schemas schemas)]
+    (d/create-database uri)
+    (create-connection! uri)
+    (transact-schemas! @connection entity-schemas)))

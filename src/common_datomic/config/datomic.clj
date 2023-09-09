@@ -47,7 +47,7 @@
     schemas :- [{s/Any s/Any}]]
    (start-datomic "localhost:4334" db-name password type schemas)))
 
-; TODO: create scheam for datomic config
+; TODO: create schema for datomic config
 (s/defn start-datomic-dev
   [{:keys [host db-name password]}
    schemas :- [{s/Any s/Any}]]

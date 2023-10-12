@@ -1,17 +1,36 @@
 (ns common-datomic.datomic
-  (:require [common-datomic.config.datomic :as config]
+  (:require [clojure.walk :as walk]
+            [common-datomic.config.datomic :as config]
             [datomic.api :as d]
             [schema.core :as s]))
 
+(defn remove-datomic-meta
+  [entity]
+  (if (map? entity)
+    (-> entity
+        (dissoc :db/id)
+        (dissoc :db/ident)
+        (dissoc :db/doc)
+        (dissoc :db/cardinality)
+        (dissoc :db/valueType))
+    entity))
+
 (defn entity->model
   [entity]
-  (-> entity
-      first
-      (dissoc :db/id)))
+  (->> entity
+       first
+       (walk/prewalk remove-datomic-meta)))
+
+(s/defn assoc-db-id
+  [entity]
+  (if (map? entity)
+    (assoc entity :db/id (rand-int 1000))
+    entity))
 
 (s/defn insert!
   [entity :- {s/Keyword s/Any}]
-  (d/transact @config/connection [entity]))
+  (let [entity-with-db-id (walk/postwalk assoc-db-id entity)]
+    @(d/transact @config/connection [entity-with-db-id])))
 
 (s/defn query-inputs
   [partial-query
@@ -24,15 +43,15 @@
 
 (s/defn db-query :- (s/maybe [{s/Keyword s/Any}])
   ([query :- [s/Any]]
-   (let [db     (d/db @config/connection)
+   (let [db (d/db @config/connection)
          result (d/q query db)]
      (map entity->model result)))
   ([query :- [s/Any]
     & inputs :- [s/Any]]
-   (let [db             (d/db @config/connection)
-         partial-query  (partial d/q query db)
+   (let [db (d/db @config/connection)
+         partial-query (partial d/q query db)
          complete-query (query-inputs partial-query (first inputs))
-         result         (complete-query)]
+         result (complete-query)]
      (map entity->model result))))
 
 (s/defn entities :- (s/maybe [{s/Keyword s/Any}])

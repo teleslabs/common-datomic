@@ -1,5 +1,6 @@
 (ns common-datomic.datomic
-  (:require [common-datomic.config.datomic :as config]
+  (:require [clojure.walk :as walk]
+            [common-datomic.config.datomic :as config]
             [datomic.api :as d]
             [schema.core :as s]))
 
@@ -18,7 +19,7 @@
   [entity]
   (->> entity
        first
-       (clojure.walk/prewalk remove-datomic-meta)))
+       (walk/prewalk remove-datomic-meta)))
 
 (s/defn assoc-db-id
   [entity]
@@ -28,7 +29,7 @@
 
 (s/defn insert!
   [entity :- {s/Keyword s/Any}]
-  (let [entity-with-db-id (clojure.walk/postwalk assoc-db-id entity)]
+  (let [entity-with-db-id (walk/postwalk assoc-db-id entity)]
     @(d/transact @config/connection [entity-with-db-id])))
 
 (s/defn query-inputs

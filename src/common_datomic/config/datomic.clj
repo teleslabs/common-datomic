@@ -70,7 +70,7 @@
         entity-schemas (create-schemas schemas)]
     (create-database! uri)
     (create-connection! uri)
-    (transact-schemas! @connection entity-schemas)))
+    @(transact-schemas! @connection entity-schemas)))
 
 (s/defn start-datomic-mem
   [{:keys [host db-name password]}
@@ -80,7 +80,7 @@
     (clear-database uri)
     (create-database! uri)
     (create-connection! uri)
-    (transact-schemas! @connection entity-schemas)))
+    @(transact-schemas! @connection entity-schemas)))
 
 (s/defn start-datomic-ddb-local
   [{:keys [host table db-name aws-access-key-id aws-access-secret-key]
@@ -91,7 +91,7 @@
         entity-schemas (create-schemas schemas)]
     (create-database! uri)
     (create-connection! uri)
-    (transact-schemas! @connection entity-schemas)))
+    @(transact-schemas! @connection entity-schemas)))
 
 (s/defn start-datomic-mysql
   [{:keys [host db-name user password]}
@@ -100,4 +100,4 @@
         entity-schemas (create-schemas schemas)]
     (create-database! uri)
     (create-connection! uri)
-    (transact-schemas! @connection entity-schemas)))
+    @(transact-schemas! @connection entity-schemas)))

@@ -15,17 +15,32 @@
                                       first)]
     (get core-values index-of-successful-value)))
 
+(s/defn enum-or-map-set? :- s/Bool
+  [schema-type :- s/Any]
+  (or (instance? schema.core.EnumSchema schema-type)
+      (set? schema-type)
+      (map? schema-type)))
+
+(s/defn enum-or-map-or-set->value-type :- s/Any
+  [schema-type :- s/Any]
+  (if (or (set? schema-type)
+          (instance? schema.core.EnumSchema schema-type))
+    :db.type/keyword
+    :db.type/ref))
+
 (s/defn schema-type->value-type :- s/Keyword
   [schema-type :- s/Any]
-  (let [core-value (schema-type->core-value schema-type)]
-    (cond
-      (string? core-value)  :db.type/string
-      (int? core-value)     :db.type/long
-      (float? core-value)   :db.type/float
-      (uuid? core-value)    :db.type/uuid
-      (boolean? core-value) :db.type/boolean
-      (inst? core-value)    :db.type/instant
-      :else                 :db.type/string)))
+  (if (enum-or-map-set? schema-type)
+    (enum-or-map-or-set->value-type schema-type)
+    (let [core-value (schema-type->core-value schema-type)]
+      (cond
+        (string? core-value)  :db.type/string
+        (int? core-value)     :db.type/long
+        (float? core-value)   :db.type/float
+        (uuid? core-value)    :db.type/uuid
+        (boolean? core-value) :db.type/boolean
+        (inst? core-value)    :db.type/instant
+        :else                 :db.type/string))))
 
 (s/defn skeleton-attribute->entity-attribute
   [attribute :- [s/Any]]

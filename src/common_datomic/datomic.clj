@@ -1,5 +1,6 @@
 (ns common-datomic.datomic
-  (:require [clojure.walk :as walk]
+  (:require [clojure.core]
+            [clojure.walk :as walk]
             [common-datomic.config.datomic :as config]
             [datomic.api :as d]
             [schema.core :as s]))
@@ -24,7 +25,7 @@
 (s/defn assoc-db-id
   [entity]
   (if (map? entity)
-    (assoc entity :db/id (rand-int 1000))
+    (assoc entity :db/id (d/tempid :db.part/user))
     entity))
 
 (s/defn insert!

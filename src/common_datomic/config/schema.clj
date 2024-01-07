@@ -45,9 +45,9 @@
 (s/defn skeleton-attribute->entity-attribute
   [attribute :- [s/Any]]
   (let [keyword (key attribute)
-        schema-type (val attribute)]
+        attributes (val attribute)]
     {:db/ident       keyword
-     :db/valueType   (schema-type->value-type schema-type)
+     :db/valueType   (schema-type->value-type (:schema attributes))
      :db/cardinality :db.cardinality/one}))
 
 (s/defn entity-schema :- [{s/Any s/Any}]

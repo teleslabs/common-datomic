@@ -93,6 +93,17 @@
     (create-connection! uri)
     @(transact-schemas! @connection entity-schemas)))
 
+(s/defn start-datomic-ddb
+  [{:keys [region table db-name aws-access-key-id aws-access-secret-key]
+    :or   {aws-access-key-id     dummy-aws-access-key-id
+           aws-access-secret-key dummy-aws-access-secret-key}}
+   schemas :- [{s/Any s/Any}]]
+  (let [uri (str "datomic:ddb://" region "/" table "/" db-name "?aws_access_key_id=" aws-access-key-id "&aws_secret_key=" aws-access-secret-key)
+        entity-schemas (create-schemas schemas)]
+    (create-database! uri)
+    (create-connection! uri)
+    @(transact-schemas! @connection entity-schemas)))
+
 (s/defn start-datomic-mysql
   [{:keys [host db-name user password]}
    schemas :- [{s/Any s/Any}]]
